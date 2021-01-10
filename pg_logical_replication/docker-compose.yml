@@ -1,0 +1,18 @@
+version: "3"
+services:
+  publisher:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "./publisher/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+  subscriber:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "./subscriber/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    depends_on:
+      - publisher
