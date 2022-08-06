@@ -10,3 +10,5 @@ These cases are based on:
 - https://github.com/debezium/debezium-examples/tree/main/tutorial#using-postgres
 
 I'd like to say thank you to authors.
+
+Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
