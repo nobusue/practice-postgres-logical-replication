@@ -1,9 +1,9 @@
 # Simple test case for cascading logical replication of PostgreSQL 
 
 ## Replication Configuration
-pg_cascade_replication_publisher_1 (publisher)
--> pg_cascade_replication_subscriber_1 (publisher&subscriber)
--> pg_cascade_replication_cascade-subscriber_1 (subscriber)
+pg_cascade_replication_publisher_1 (publisher only)
+-> pg_cascade_replication_subscriber_1 (subscriber & publisher)
+-> pg_cascade_replication_cascade-subscriber_1 (subscriber only)
 
 ## Test procedure
 After `docker-compose up` , insert new records to publisher.
