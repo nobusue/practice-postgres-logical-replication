@@ -1,15 +1,22 @@
-# PostgreSQL 論理レプリケーションおためし
+# Simple test case for cascading logical replication of PostgreSQL 
 
-## 使い方
+## Replication Configuration
+pg_cascade_replication_publisher_1 (publisher)
+-> pg_cascade_replication_subscriber_1 (publisher&subscriber)
+-> pg_cascade_replication_cascade-subscriber_1 (subscriber)
 
-docker-compose up して subscriber 側につなげてサブスクライブ設定したらレプリケーションはじまる。
+## Test procedure
+After `docker-compose up` , insert new records to publisher.
+You can see both subcriber and cascade-subscriber have added records.
 
+### boot all containers
 ```
 $ docker-compose up
 ```
 
+### publisher
 ```
-$ docker exec -it pg_logical_replication_subscriber_1 /bin/bash
+$ docker exec -it pg_cascade_replication_publisher_1 /bin/bash
 bash-5.0# psql -h localhost -U postgres
 
 postgres=# \c repdb_1
@@ -19,10 +26,24 @@ repdb_1=# select * from table_1;
 ------+-------
 (0 rows)
 
-repdb_1=# CREATE SUBSCRIPTION my_subscription CONNECTION 'host=publisher port=5432 dbname=repdb_1 user=postgres password=postgres' PUBLICATION my_publication;
+repdb_1=# INSERT INTO table_1 VALUES (now(), md5(now()::text));
 
 repdb_1=# select * from table_1;
             time            |              value
 ----------------------------+----------------------------------
- 2021-01-10 14:41:34.497245 | a240890d8115f8804e946954e78344a9
+ 2022-08-06 13:04:00.203149 | 54bb7a7b271680a9f1fcb4058d24291b
 ```
+
+### cascade-subscriber
+```
+$ docker exec -it pg_cascade_replication_cascade-subscriber_1 /bin/bash
+bash-5.0# psql -h localhost -U postgres
+
+postgres=# \c repdb_1
+
+
+repdb_1=# select * from table_1;
+            time            |              value
+----------------------------+----------------------------------
+ 2022-08-06 13:04:00.203149 | 54bb7a7b271680a9f1fcb4058d24291b
+ ```
