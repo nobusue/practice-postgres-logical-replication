@@ -13,6 +13,7 @@ You can see change events on Kafka via CDC from subscriber.
 
 ### Boot all containers
 ```
+export DEBEZIUM_VERSION=1.9
 docker-compose up
 ```
 
