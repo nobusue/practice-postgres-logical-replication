@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - "./publisher/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: pg_isready -U postgres
   subscriber:
     image: postgres:12-alpine
     environment:
@@ -14,8 +16,11 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - "./subscriber/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: pg_isready -U postgres
     depends_on:
-      - publisher
+      publisher:
+        condition: service_healthy
   cascade-subscriber:
     image: postgres:12-alpine
     environment:
@@ -24,4 +29,5 @@ services:
     volumes:
       - "./cascade-subscriber/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
     depends_on:
-      - subscriber
+      subscriber:
+        condition: service_healthy
